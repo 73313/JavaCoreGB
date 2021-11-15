@@ -1,5 +1,6 @@
 package lesson7;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -21,7 +22,7 @@ public class RequestHandler {
                 .addPathSegment("v1")
                 .addPathSegment("cities")
                 .addPathSegment("search")
-                .addQueryParameter("apikey","V3TuTJD92snjKNeI4lxnR3wQWeXf0G8Q")
+                .addQueryParameter("apikey","4pWwKtuTKsBeGdej4Jil1RMbDXnvhwlA")
                 .addQueryParameter("q",cityName)
                 .build();
 
@@ -39,10 +40,7 @@ public class RequestHandler {
 
         return code;
 
-
-
     }
-
     public static String getForecast(String cityCode) throws IOException {
         HttpUrl httpUrl=new HttpUrl.Builder()
                 .scheme("http")
@@ -50,11 +48,11 @@ public class RequestHandler {
                 .addPathSegment("forecasts")
                 .addPathSegment("v1")
                 .addPathSegment("daily")
-                //.addPathSegment("5day")
-                .addPathSegment("1day")
+                .addPathSegment("5day")
+                //.addPathSegment("1day")
                 .addPathSegment(cityCode)
 
-                .addQueryParameter("apikey","V3TuTJD92snjKNeI4lxnR3wQWeXf0G8Q")
+                .addQueryParameter("apikey","4pWwKtuTKsBeGdej4Jil1RMbDXnvhwlA")
                 .addQueryParameter("metric","true")
                 .build();
 
@@ -67,8 +65,20 @@ public class RequestHandler {
 
         String json= response.body().string();
 
+        //return json;
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        String forecastsJson= objectMapper.readTree(json).at("/DailyForecasts").toString();
+        for (int i =0; i<5; i++){
+            String dayForecast= objectMapper.readTree(forecastsJson).get(i).toString();
 
 
-        return json;
+            String date= objectMapper.readTree(dayForecast).at("/Date").asText();
+            System.out.println("В данном городе на "+ " "+ date);
+            String maxTemp= objectMapper.readTree(dayForecast).at("/Temperature/Maximum/Value").asText();
+            System.out.println("Максимальная температура :"+ " "+maxTemp);
+            String minTemp= objectMapper.readTree(dayForecast).at("/Temperature/Minimum/Value").asText();
+            System.out.println("Минимальная температура :"+ " "+minTemp);}
+
+        return "Прогноз выполнен";
     }
 }

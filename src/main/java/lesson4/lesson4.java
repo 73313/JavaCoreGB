@@ -64,7 +64,7 @@ public class lesson4 {
         phonebook.add("Петров", "89123698754");
         phonebook.add("Солошенко", "89032569852");
         phonebook.add("Иванов", "8456963215");
-        phonebook.add("Солошенко", "89875239641");
+       
 
 
         System.out.println(phonebook.get("Сезёмин"));
@@ -72,6 +72,7 @@ public class lesson4 {
         System.out.println(phonebook.get("Петров"));
         System.out.println(phonebook.get("Диков"));
         System.out.println(phonebook.get("Солошенко"));
+        System.out.println(phonebook.get("Солош"));
     }
 }
 
